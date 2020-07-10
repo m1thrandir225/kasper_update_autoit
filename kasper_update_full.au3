@@ -53,8 +53,8 @@ GUICtrlCreateButton("Mestenje Printeri", 330, 130, 150, 50)
 GUICtrlSetOnEvent(-1,"printer_mestenje")
 GUICtrlSetFont(-1, 9, 500, 2, "Arial", 0)
 
-GUICtrlCreateButton("Install REG", 50, 230, 150, 50)
-GUICtrlSetOnEvent(-1, "downloadInstall")
+GUICtrlCreateButton("404 nedovrseno", 50, 230, 150, 50)
+GUICtrlSetOnEvent(-1, "upcoming")
 GUICtrlSetFont(-1, 9, 500, 2, "Arial", 0)
 
 GUICtrlCreateButton("Initialize Database", 400, 230, 150, 50)
@@ -194,6 +194,9 @@ func SpecialEvents()
         EndSelect
 EndFunc
 
+func upcoming() 
+    MsgBox($MB_SYSTEMMODAL, "Error", "Nedovrseno seuste")
+EndFunc
 func kasper_database_moving()
     MsgBox($MB_OK, "Select Kasper Update", "Please select the newest downloaded kasper database")
     $selectedVersion = FileOpenDialog("Select KASPER_CDEP*****", "C:\CDEPS\Sql\", "All(*.*)", BitOR($FD_FILEMUSTEXIST, $FD_MULTISELECT))
