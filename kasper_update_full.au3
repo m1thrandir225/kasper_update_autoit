@@ -24,42 +24,42 @@ GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_RESTORE, "SpecialEvents")
 GUICtrlCreateLabel("Kasper Update Software", 230, 15, 200, 50)
-GUICtrlSetFont(-1, 10, 900, 4, "Arial", 0)
+GUICtrlSetFont(-1, 10, 900, 4, "Segoe UI", 0)
 GUICtrlCreateLabel("© Sebastijan Zindl", 490, 380, 150, 100)
-GUICtrlSetFont(-1, 8.5, 700, 2, "Arial", 0)
+GUICtrlSetFont(-1, 8.5, 700, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("KASPER_CDEP-UPDATES", 25, 50, 125, 50)
 GUICtrlSetOnEvent(-1, "downloadUpdate")
-GUICtrlSetFont(-1, 7, 700, 2, "Arial", 0)
+GUICtrlSetFont(-1, 7, 700, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("KASPER_CDEPS_Install", 225, 50, 125, 50)
 GUICtrlSetOnEvent(-1, "downloadInstall")
-GUICtrlSetFont(-1, 7.5, 700, 2, "Arial", 0)
+GUICtrlSetFont(-1, 7.5, 700, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("Tarifa", 425, 50, 75, 50)
 GUICtrlSetOnEvent(-1, "downloadTarifa")
-GUICtrlSetFont(-1, 9, 700, 2, "Arial", 0)
+GUICtrlSetFont(-1, 9, 700, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("SQL Update", 500, 50, 75, 50 )
 GUICtrlSetOnEvent(-1, "downloadSQL")
-GUICtrlSetFont(-1, 9, 700, 2, "Arial", 0)
+GUICtrlSetFont(-1, 9, 700, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("Kasper Database Update", 130, 130, 150, 50)
 GUICtrlSetOnEvent(-1, "kasper_database_moving")
-GUICtrlSetFont(-1, 7.5, 500, 2, "Arial", 0)
+GUICtrlSetFont(-1, 7.5, 500, 0, "Segoe UI", 0)
 
 
 GUICtrlCreateButton("Mestenje Printeri", 330, 130, 150, 50)
 GUICtrlSetOnEvent(-1,"printer_mestenje")
-GUICtrlSetFont(-1, 9, 500, 2, "Arial", 0)
+GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("404 nedovrseno", 50, 230, 150, 50)
 GUICtrlSetOnEvent(-1, "upcoming")
-GUICtrlSetFont(-1, 9, 500, 2, "Arial", 0)
+GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 
 GUICtrlCreateButton("Initialize Database", 400, 230, 150, 50)
 GUICtrlSetOnEvent(-1, "initializeDatabase")
-GUICtrlSetFont(-1, 9, 500, 2, "Arial", 0)
+GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 
 $default = GUICtrlCreateCheckbox("Default", 50, 350, 50, 50)
 $custom = GUICtrlCreateCheckbox("Custom Parameters", 130, 350, 50, 50)
