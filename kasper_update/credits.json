@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "steady-anagram-282607",
+  "private_key_id": "196ae2a7db28ce4da350f9f28753f56613cd435d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC73Prmb47y2+GD\n3tSAzPQTMsrTj4aqFk3/l/6j+Moul08PeDnrX/RGgoc9Au+xBJ+zyVES277SLzdb\nhvRlyFjI7OycawqVy1dNfGDWCMVR5R0UqxHNTT3SsvX9giSq+fTt8fyhrGloqtab\nUfJPW6mj3zT/bN8eja2mwgeG7mrxrpgm+kFpYH/awxNrjmUxJ/X7tmSTpG350kZE\nn/HT5/fYgZ3nDu1v8bYhIETCcPTbRE9524sGO7Sft0mOmMQb39X6pe2yQ3IJbBRu\nBqC3T2uxnlpMmLSkfaiN8HZMbKh31lGR40fx7qiNdmKIbyNT3yRPTeCu6dmZ9s4m\nbNGYaeqtAgMBAAECggEACkrQiihpff+y6r0eClJwOs8JEq8l0xK2wj6LCmO6e/P5\nNmFBVxZiNSy4iQysohedQkXQxcY5PZ2tnDuYDy17Q8LLMcShh1RlG48pZQCFAvgY\n8EVxC7zkGrOIS5PCO4XHN/QOgbMG8V+Os2K5ckSU1jAH4MiPrsZXUbAGpotQW547\nb8MZeZV2NMXNjuzOBmAEUd+dRV639sqHX2ggOH4hHdA14zhNxvzFUD/FtNmNc7t+\nUesJlvMFtyaFvsztSOSwSs4i1vKNyY2LX+u6lwUIc9XDCZbiRiiemaDOeiwacEsN\nCE7EfEhsnXHT6sQ3tP50B5X9sIbOg3waPlMeX3t+gQKBgQD29I8xZTHRwmR/29f/\n2AtDtWWoNa3qbXnZSzsPpXEQ4jntqF2xE8huuE9IGkT0NlAbSH53qa5dcNxdr10K\nGZU2eeD6kxiORRx+XhOgD/6g8LcHdkjG9f34xMxI7crhHH77t9xHwjul8I5JFXMh\nQS01ktE4evsKyT+HhlW/XHm47QKBgQDCvmBHi56rp4CG47Z4g8gfHu1et3G7FvOh\n6yJjS8d2a5RkYy8URODspOE/EEAWXsyhCZa4dLbukx7ggyx2ZPi4/jCZ66AyJxum\nW04fS2busqDjldPgoX6HBUDU/ugtyRtrtwiepTT13BT03ayVJfhWwlT+uSfhS/LL\nY8fhGguAwQKBgAkoHD8an3RFnvBWuHWWDyTdjv1jsCUnFgOGlJQJ8F1N5hP30DGG\nqEHit53Wy4O6l9HLKFVLh1mTm7gljm+Xbz7r2fmwhpKP4XSWDGg875YMFt1B94TZ\nDiexNFnn50PdiJ/Qu2w1uXx3pO70yqYLAqAf534OoUxPFfnycy97QFApAoGANWjt\nEvIx5DYeQ+B0DP1nh1F+HHoHUR5sVz4bwkvoOowquJWTNeXmIkDeHeOhEAGT8Z6l\nnZU1Dp1+3Ghda2Mp6+KbBbvfxaGALdHgzShq5JBNG93drD/eab2BGGmI1/XN9W7P\niGMa8UsY3Ednq8gsIe9OTEYPr/SadDm7efsgqIECgYAhpPzzLI1fm2jWMHEaUSeA\n0/SMiAdVKtb0wz/UFWaWmT7iQOR1Xg0oTlCv3rjqKZKH0cGeH+7u5B0P3hyionkd\nvwOx+Ii8bu+i/s0ZRsxKtqiiRDAqghg/pBYCZFsYeJR2T4sk3uv2NyEAQm2NRi8v\n61qIKKaN3j4/HZeOZnB8jQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "marko-2012@steady-anagram-282607.iam.gserviceaccount.com",
+  "client_id": "110337110886724258489",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/marko-2012%40steady-anagram-282607.iam.gserviceaccount.com"
+}
