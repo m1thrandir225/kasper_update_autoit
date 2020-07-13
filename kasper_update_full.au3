@@ -10,13 +10,16 @@
 #include <Crypt.au3>
 #include <SQLite.au3>
 #include <SQLite.dll.au3>
+#include <Array.au3>
+#include <GuiListView.au3>
+#include <ColorConstants.au3>
 #RequireAdmin
 
 AutoItSetOption("MouseCoordMode", 0)
 Opt("GUIOnEventMode", 1)
 
 
-Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma, $firma_mesto
+Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $iRival, $aResult, $iColumns,  $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma, $firma_mesto, $firma_ime
 Global $progressbar = GUICtrlCreateProgress(20, 320, 200, 20, $PBS_SMOOTH)
 Global $kasper_gui = GUICreate("Kasper Update", 600, 400)
 GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
@@ -60,40 +63,56 @@ GUICtrlCreateButton("Initialize Database", 400, 230, 150, 50)
 GUICtrlSetOnEvent(-1, "initializeDatabase")
 GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 
-GUICtrlCreateLabel("V1.0.3", 15, 380, 50, 50)
+GUICtrlCreateLabel("V1.0.4", 15, 380, 50, 50)
 GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 GUISetState(@SW_HIDE)
 
+$id_na_firma_label = GuiCtrlCreateLabel("", 20, 330, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
+$ime_na_firma_label = GuiCtrlCreateLabel("", 170, 330, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
+$lokacija_na_firma_label = GuiCtrlCreateLabel("", 320, 330, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
+$server_na_firma_label = GuiCtrlCreateLabel("", 470, 330, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
+$db_na_firma_label = GuiCtrlCreateLabel("", 160, 380, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
+$ecus_na_firma_label = GuiCtrlCreateLabel("", 320, 380, 140, 20,-1)
+GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
+GUICtrlSetColor(-1, $COLOR_WHITE)
 Global $login_form = GUICreate("Login", 257, 115, -1, -1)
 
 ;sql_gui
-Global $sql_info = GUICreate("Informacii za firma", 350, 200, -1, -1)
-Global $ime_input = GuiCtrlCreateInput("", 10, 20, 200, 30,-1)
-Global $lokacija_input = GuiCtrlCreateInput("", 10, 70, 200, 30,-1)
-Global $id_input = GuiCtrlCreateInput("", 10, 120, 200, 30,-1)
+Global $sql_info = GUICreate("Informacii za firma", 500, 400, -1, -1)
+Global $ime_input = GuiCtrlCreateInput("", 10, 20, 270, 40,-1)
+Global $id_input = GuiCtrlCreateInput("", 10, 100, 270, 40,-1)
 GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_RESTORE, "SpecialEvents")
-$ime = GuiCtrlCreateLabel("Vnesi Ime", 220, 30, 120, 20,-1)
-$Lokacija = GuiCtrlCreateLabel("Vnesi Lokacija", 220, 80, 120, 20,-1)
-$Id = GuiCtrlCreateLabel("Vnesi ID", 220, 130, 120, 20,-1)
-$Cancel = GuiCtrlCreateButton("Cancel", 20, 170, 70, 20,-1)
-GUICtrlSetOnEvent(-1, "quit")
-$Continue = GuiCtrlCreateButton("Continue", 260, 170, 70, 20,-1)
+$ime = GuiCtrlCreateLabel("Vnesi ime na firma", 310, 30, 170, 30,-1)
+$Id = GuiCtrlCreateLabel("Vnesi ID na firma", 310, 110, 170, 30,-1)
+$Search = GuiCtrlCreateButton("Search", 10, 160, 70, 30,-1)
+GUICtrlSetOnEvent(-1, "sql_search")
+$Clear = GuiCtrlCreateButton("Clear", 80, 160, 70, 30,-1)
+GUICtrlSetOnEvent(-1, "clear")
+$Continue = GuiCtrlCreateButton("Continue", 410, 160, 70, 30,-1)
 GUICtrlSetOnEvent(-1, "sql_continue")
+global $listView = GUICtrlCreateListView("", 0, 205, 500, 205)
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "", 150)
+_GUICtrlListView_AddColumn($listView, "", 70)
+_GUICtrlListView_AddColumn($listView, "", 150)
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "", 100)
 GUISetState(@SW_HIDE, $sql_info)
-
-_SQLite_Startup()
-ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
-if @error Then
-	MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
-	Exit -1
-EndIf
-global $sqDB = _SQLite_Open("firmi_python.db")
-if @error Then
-    MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
-	Exit -1
-EndIf
 downloadDatabase()
 
 Func downloadInstall()
@@ -214,12 +233,52 @@ func downloadDatabase()
 	if (FileExists(@ScriptDir & "\firmi_python.db") and FileExists(@ScriptDir & "\sqlite3.dll")) Then
 		login()
 	Else
-		DirCreate(@ScriptDir & "\kasper_update_temp")
+		DirCreate(@ScriptDir & "\temp\")
+		$downloadDBPath = (@ScriptDir & "\temp\sql_db.zip")
+		$downloadDLLPath = (@ScriptDir & "\temp\dll.zip")
+		$downloadDLLURL = "https://www.sqlite.org/2020/sqlite-dll-win32-x86-3320300.zip"
+		$downloadDBURL = "https://www.dropbox.com/sh/dkhcu4cn1aqoil1/AAB2ngBDa_I33uBHKux1o_O_a?dl=1"
+		$downloadDB = InetGet($downloadDBURL, $downloadDBPath, 1, 1)
+		$downloadDLL = InetGet($downloadDLLURL, $downloadDLLPath, 1, 1)
+		$downloadDBSize = InetGetSize($downloadDBURL)
+		$downloadDLLSize = InetGetSize($downloadDLLURL)
+		ProgressOn("Downloading requirenments", "Pocekajte se simnuvaat potrebni fajlovi", "please wait")
+		While Not InetGetInfo($downloadDB, 2)
+			sleep(500)
+			$downloadDBBytesRecieved = InetGetInfo($downloadDB, 0)
+			$pctDB = Int(($downloadDBBytesRecieved/$downloadDBSize)*100)
+			ProgressSet($pctDB, $pctDB & "%")
+		WEnd
+		While Not InetGetINfo($downloadDLL, 2)
+			sleep(500)
+			$downloadDLLBytesRecieved = InetGetInfo($downloadDLL, 0)
+			$pctDLL = Int(($downloadDLLBytesRecieved/$downloadDLLSize)*100)
+			ProgressSet($pctDLL, $pctDLL & "%")
+		WEnd
+		ProgressOff()
+		$zipDLL = (@ScriptDir & "\temp\dll.zip")
+		$zipDB =  (@ScriptDir &  "\temp\sql_db.zip")
+		$unzipDestination = (@ScriptDir & "\temp\")
+		$iFlag = 16 + 256
+		$unzipDB = _Zip_UnzipAll($ZipDB, $unzipDestination, $iFlag)
+		$unzipDLL = _Zip_UnzipAll($zipDLL, $unzipDestination, $iFlag)
+		$deletezipDLL = FileDelete(@ScriptDir & "\temp\dll.zip")
+		$deletezipRES = FileDelete(@ScriptDir & "\temp\sqlite3.def")
+		$deletezipDB = FileDelete(@ScriptDir & "\temp\sql_db.zip")
+		InetClose($downloadDB)
+		$moveDLL = FileMove(@ScriptDir & "\temp\sqlite3.dll", @ScriptDir)
+		$moveDB = FileMove(@ScriptDir & "\temp\firmi_python.db", @ScriptDir)
+		$deleteTemp = DirRemove(@ScriptDir & "\temp")
+		login()
 	EndIf
 EndFunc
+
 Func SpecialEvents()
 	Select
 		Case @GUI_CtrlId = $GUI_EVENT_CLOSE
+			$deleteDLL = FileDelete(@ScriptDir & "\sqlite3.dll")
+			$hashDB = _Crypt_HashFile(@ScriptDir & "\firmi_python.db", $CALG_SHA_256)
+			$deleteDB = FileDelete(@ScriptDir & "\firmi_python.db")
 			Exit
 		Case @GUI_CtrlId = $GUI_EVENT_MINIMIZE
 		Case @GUI_CtrlId = $GUI_EVENT_RESTORE
@@ -365,44 +424,146 @@ Func login()
 		Sleep(250)
 	WEnd
 EndFunc   ;==>login
-
+func sql_search()
+	$read_ime = GUiCtrlRead($ime_input)
+	$read_id = GUICtrlRead($id_input)
+	if $read_ime = "" And $read_id= "" Then
+		MsgBox($MB_RETRYCANCEL, "Error", "Nema dovolno parametrni za prebaruvanje")
+	ElseIf $read_ime="" Then
+		_SQLite_Startup()
+		ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
+			Exit -1
+		EndIf
+		$sqDB = _SQLite_Open("firmi_python.db")
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
+			Exit -1
+		EndIf
+		$iRival = _SQLite_GetTable2d($sqDB, "SELECT * FROM firmiD WHERE RB=" & _SQLite_FastEscape($read_id) &" ORDER BY RB", $aResult, $aRow, $iColumns)
+		_GUICtrlListView_AddArray($listView, $aResult)
+		_SQLite_Close()
+		_SQLite_Shutdown()
+	ElseIf $read_id="" Then
+		_SQLite_Startup()
+		ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
+			Exit -1
+		EndIf
+		$sqDB = _SQLite_Open("firmi_python.db")
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
+			Exit -1
+		EndIf
+		$iRival = _SQLite_GetTable2d($sqDB, "SELECT * FROM firmiD WHERE IME=" & _SQLite_FastEscape($read_ime) &" ORDER BY RB", $aResult, $aRow, $iColumns)
+		_GUICtrlListView_AddArray($listView, $aResult)
+		_SQLite_Close()
+		_SQLite_Shutdown()
+	Else
+		MsgBox($MB_RETRYCANCEL, "Error", "Nemoze prebaruvanje so 2 parametri")
+	EndIf
+EndFunc
 func sql_continue() 
 	$ime_read = GUICtrlRead($ime_input)
-	$lokacija_read = GUICtrlRead($lokacija_input)
 	$id_read = GUICtrlRead($id_input)
-	if $ime_read = "" <> $lokacija_read = "" <> $id_read = "" Then
-		MsgBox($MB_RETRYCANCEL,  "Error", "ne vnesovte informacii")
-	ElseIf $id_read = "" Then
-		MsgBox($MB_RETRYCANCEL,  "Error", "Ne vnesovte ID na firma")
-	ElseIf $ime_read="" or $lokacija_read ="" Then
+	if $id_read = ""  Then
+		MsgBox($MB_RETRYCANCEL,  "Error", "Ne vnesovte ID")
+	ElseIf $ime_read="" Then
+		_SQLite_Startup()
+		ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
+			Exit -1
+		EndIf
+		global $sqDB = _SQLite_Open("firmi_python.db")
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
+			Exit -1
+		EndIf
 		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
 		_SQLite_Close()
 		_SQLite_Shutdown()
 		$firma_id = $aRow[0]
+		$firma_ime = $aRow[1]
+		$firma_mesto = $aRow[2]
 		$server_firma = $aRow[3]
 		$firma_db = $aRow [4]
 		$ecus_firma = $aRow [5]
 		$user_firma = $aRow [6]
 		$pass_firma = $aRow [7]
 		GUISetState(@SW_HIDE, $sql_info)
+		if $firma_id = "" Then
+			GUICtrlSetData($id_na_firma_label, "/")
+		Else
+			GUICtrlSetData($id_na_firma_label, $firma_id)
+		EndIf
+		if $firma_ime = "" Then
+			GUICtrlSetData($ime_na_firma_label, "/")
+		Else
+			GUICtrlSetData($ime_na_firma_label, $firma_ime)
+		EndIf
+		if $server_firma = "" Then
+			GUICtrlSetData($server_na_firma_label, "/")
+		Else
+			GUICtrlSetData($server_na_firma_label, $server_firma)
+		EndIf
+		if $firma_mesto = "" Then
+			GUICtrlSetData($lokacija_na_firma_label, "/")
+		Else
+			GUICtrlSetData($lokacija_na_firma_label, $firma_mesto)
+		EndIf
+		if $firma_db = "" Then
+			GUICtrlSetData($db_na_firma_label, "/")
+		Else
+			GUICtrlSetData($db_na_firma_label, $firma_db)
+		EndIf
+		if $ecus_firma = "" Then
+			GUICtrlSetData($ecus_na_firma_label, "/")
+		Else
+			GUICtrlSetData($ecus_na_firma_label, $ecus_firma)
+		EndIf
 		GuiSetState(@SW_SHOW, $kasper_gui)
 		WinActivate("Kasper Update")
 	Else
-		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_read) & ' AND LOKACIJA=' & _SQLite_FastEscape($lokacija_read) & ' AND RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
+		_SQLite_Startup()
+		ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
+			Exit -1
+		EndIf
+		$sqDB = _SQLite_Open("firmi_python.db")
+		if @error Then
+			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
+			Exit -1
+		EndIf
+		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_read) & ' AND RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
 		_SQLite_Close()
 		_SQLite_Shutdown()
 		$firma_id = $aRow[0]
+		$firma_ime = $aRow[1]
+		$firma_mesto = $aRow[2]
 		$server_firma = $aRow[3]
 		$firma_db = $aRow [4]
 		$ecus_firma = $aRow [5]
 		$user_firma = $aRow [6]
 		$pass_firma = $aRow [7]
+		GUICtrlSetData($id_na_firma_label, $firma_id)
+		GUICtrlSetData($ime_na_firma_label, $firma_ime)
+		GUICtrlSetData($server_na_firma_label, $server_firma)
+		GUICtrlSetData($lokacija_na_firma_label, $firma_mesto)
+		GUICtrlSetData($db_na_firma_label, $firma_db)
+		GUICtrlSetData($ecus_na_firma_label, $ecus_firma)
 		GUISetState(@SW_HIDE, $sql_info)
 		GuiSetState(@SW_SHOW, $kasper_gui)
 		WinActivate("Kasper Update")
 	EndIf
 EndFunc
 
+func clear()
+	_GUICtrlListView_DeleteAllItems($listView)
+EndFunc
 func quit()
 	Exit
 EndFunc

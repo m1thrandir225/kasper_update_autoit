@@ -5,11 +5,24 @@
 #include <SQLite.au3>
 #include <SQLite.dll.au3>
 #include <GUIConstantsEx.au3>
+#include <Array.au3>
 
-local $hQuery, $aRow, $aData
-$ime_input = InputBox("Ime na Firma", "Vnesi ime na firma")
-$lokacija_input = InputBox("Lokacija na Firma", "Vnesi lokacija na firma")
-$id_input = InputBox("ID na Firma", "Vnesi ID na firma")
+local $hQuery, $aRow, $aData, $iRival, $aResult, $iColumns
+
+$ime_input = InputBox("", "vnesi ime")
+GUICreate("", 600, 500)
+$listView = GUICtrlCreateListView("", 2, 2, 590, 490)
+GUISetState(@SW_SHOW)
+
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "", 70)
+_GUICtrlListView_AddColumn($listView, "", 100)
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "", 100)
 
 _SQLite_Startup()
 ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
@@ -22,14 +35,11 @@ if @error Then
     MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
     Exit -1
 EndIf
-_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_input) & ' AND LOKACIJA=' & _SQLite_FastEscape($lokacija_input) & ' AND RB=' & _SQLite_FastEscape($id_input) & ' ORDER BY RB', $aRow)
+$iRival = _SQLite_GetTable2d($sqDB, "SELECT * FROM firmiD WHERE IME=" & _SQLite_FastEscape($ime_input) &" ORDER BY RB", $aResult, $aRow, $iColumns)
+_GUICtrlListView_AddArray($listView, $aResult)
 _SQLite_Close()
 _SQLite_Shutdown()
-$firma_id = $aRow[0]
-$server = $aRow[3]
-$database = $aRow[4]
-$ecus = $aRow[5]
-$user = $aRow[6]
-$pass = $aRow[7]
 
-ConsoleWrite(StringFormat(" %-10s %-10s %-10s %-10s %-10s", $server, $database, $ecus, $user, $pass))
+Do
+    Sleep(250)
+Until GUIGetMsg() = $GUI_EVENT_CLOSE
