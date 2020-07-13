@@ -16,7 +16,7 @@ AutoItSetOption("MouseCoordMode", 0)
 Opt("GUIOnEventMode", 1)
 
 
-Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma
+Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma, $firma_mesto
 Global $progressbar = GUICtrlCreateProgress(20, 320, 200, 20, $PBS_SMOOTH)
 Global $kasper_gui = GUICreate("Kasper Update", 600, 400)
 GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
@@ -60,9 +60,8 @@ GUICtrlCreateButton("Initialize Database", 400, 230, 150, 50)
 GUICtrlSetOnEvent(-1, "initializeDatabase")
 GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 
-$default = GUICtrlCreateCheckbox("Default", 50, 350, 50, 50)
-$custom = GUICtrlCreateCheckbox("Custom Parameters", 130, 350, 50, 50)
-
+GUICtrlCreateLabel("V1.0.3", 15, 380, 50, 50)
+GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
 GUISetState(@SW_HIDE)
 
 Global $login_form = GUICreate("Login", 257, 115, -1, -1)
@@ -246,105 +245,50 @@ EndFunc   ;==>kasper_database_moving
 
 Func initializeDatabase()
 	Opt("SendKeyDelay", 5)
-	$default_check = GUICtrlRead($default)
-	$custom_check = GUICtrlRead($custom)
-	If $default_check = $GUI_CHECKED Then
-		$date = String(_NowDate())
-		$date_for_use = StringReplace($date, "/", "")
-		AutoItSetOption("WinTitleMatchMode", 4)
-		$open = ShellExecute("C:\CDEPS\KASPER_CDEPS.mdb")
-		WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-		MouseClick("left", 237, 78)
-		WinWaitActive("ПОТВРДЕТЕ")
-		Send("{ENTER}")
-		Sleep(1000)
-		Send("old" & $date_for_use & "KASPER_CDEPS.mdb")
-		Send("{ENTER}")
-		WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-		Sleep(1000)
-		MouseClick("left", 200, 183)
-		Sleep(1000)
-		Send("{ENTER}")
-		Send("{ENTER}")
-		Send("{ENTER}")
-		Send("{ENTER}")
-		Sleep(10000)
-		Send("{ENTER}")
-		Send("{TAB}")
-		Sleep(10000)
-		MouseClick("left", 241, 450)
-		Sleep(10000)
-		MouseClick("left", 51, 43)
-		Sleep(1000)
-		MouseClick("left", 246, 657, 5)
-		Sleep(1000)
-		MouseClick("left", 253, 2)
-		WinClose("КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-	ElseIf $custom_check = $GUI_CHECKED Then
-		$server = InputBox("Server", "Stavi go Tocnoto ime na serverot")
-		If ($server = "") Then
-			MsgBox($MB_SYSTEMMODAL, "Error", "nemate vneseno server")
-			Exit
-		EndIf
-		$database = InputBox("Database", "Vnesi go imeto na databazata")
-		If ($server = "") Then
-			MsgBox($MB_SYSTEMMODAL, "Error", "Nemate vneseno databaza")
-			Exit
-		EndIf
-		$username = InputBox("Username", "Vnesi username")
-		If ($username = "") Then
-			MsgBox($MB_SYSTEMMODAL, "Error", "nemate vneseno username")
-			Exit
-		EndIf
-		$password = InputBox("Password", "Vnesete password")
-		If ($password = "") Then
-			MsgBox($MB_SYSTEMMODAL, "Error", "nemate vneseno password")
-			Exit
-		EndIf
-		$date = String(_NowDate())
-		$date_for_use = StringReplace($date, "/", "")
-		AutoItSetOption("WinTitleMatchMode", 4)
-		$open = ShellExecute("C:\CDEPS\KASPER_CDEPS.mdb")
-		WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-		MouseClick("left", 237, 78)
-		WinWaitActive("ПОТВРДЕТЕ")
-		Send("{ENTER}")
-		Sleep(1000)
-		Send("old" & $date_for_use & "KASPER_CDEPS.mdb")
-		Send("{ENTER}")
-		WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-		Sleep(1000)
-		MouseClick("left", 200, 183)
-		Sleep(1000)
-		Send("{BACKSPACE 50}")
-		Send($server)
-		Send("{ENTER}")
-		Send("{ENTER}")
-		Send("{BACKSPACE 50}")
-		Send($database)
-		Send("{ENTER}")
-		Send("{BACKSPACE 50}")
-		Send($username)
-		Send("{ENTER}")
-		Send("{BACKSPACE 50}")
-		Send($password)
-		Sleep(10000)
-		Send("{ENTER}")
-		Send("{TAB}")
-		Sleep(1000)
-		MouseClick("left", 241, 450)
-		Sleep(10000)
-		MouseClick("left", 51, 43)
-		Sleep(1000)
-		MouseClick("left", 246, 657, 5)
-		Sleep(1000)
-		MouseClick("left", 253, 2)
-		WinClose("КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
-	ElseIf (($custom_check <> $GUI_CHECKED) And ($default_check <> $GUI_CHECKED)) Then
-		MsgBox($MB_RETRYCANCEL, "Erorr", "No Checkbox was selected")
-
-	EndIf
-
+	$date = String(_NowDate())
+	$date_for_use = StringReplace($date, "/", "")
+	AutoItSetOption("WinTitleMatchMode", 4)
+	$open = ShellExecute("C:\CDEPS\KASPER_CDEPS.mdb")
+	WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
+	sleep(1000)
+	MouseClick("left")
+	sleep(1000)
+	MouseClick("left", 237, 78)
+	WinWaitActive("ПОТВРДЕТЕ")
+	Send("{ENTER}")
+	Sleep(1000)
+	Send("old" & $date_for_use & "KASPER_CDEPS.mdb")
+	Send("{ENTER}")
+	WinWaitNotActive(" КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
+	Sleep(1000)
+	MouseClick("left", 200, 183)
+	Sleep(1000)
+	Send("{BACKSPACE 50}")
+	Send($server_firma)
+	Send("{ENTER}")
+	Send("{ENTER}")
+	Send("{BACKSPACE 50}")
+	Send($firma_db)
+	Send("{ENTER}")
+	Send("{BACKSPACE 50}")
+	Send($user_firma)
+	Send("{ENTER}")
+	Send("{BACKSPACE 50}")
+	Send($pass_firma)
+	Sleep(10000)
+	Send("{ENTER}")
+	send("{BACKSPACE 50}")
+	send($firma_id)
+	Send("{TAB}")
+	Sleep(1000)
+	MouseClick("left", 241, 450)
+	Sleep(10000)
+	MouseClick("left", 51, 43)
+	Sleep(1000)
+	MouseClick("left", 246, 657, 5)
+	Sleep(1000)
+	MouseClick("left", 253, 2)
+	WinClose("КАСПЕР_CDEPS+OL_2020_R4_a002_02.07.2020 (Програм за шпедитерско работење (поедноставени постапки)) (c)ВеГеСа")
 EndFunc   ;==>initializeDatabase
 
 Func printer_mestenje()
@@ -391,6 +335,8 @@ Func LoginClick()
 		Sleep(1000)
 		GUISetState(@SW_HIDE, $login_form)
 		GUISetState(@SW_SHOW, $sql_info)
+		sleep(100)
+		WinActivate("Informacii za firma")
 	Else
 		MsgBox($MB_RETRYCANCEL, "Access Denied", "Password is incorrect", 5)
 	EndIf
@@ -435,6 +381,7 @@ func sql_continue()
 		$pass_firma = $aRow [7]
 		GUISetState(@SW_HIDE, $sql_info)
 		GuiSetState(@SW_SHOW, $kasper_gui)
+		WinActivate("Kasper Update")
 	Else
 		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_read) & ' AND LOKACIJA=' & _SQLite_FastEscape($lokacija_read) & ' AND RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
 		_SQLite_Close()
@@ -447,9 +394,11 @@ func sql_continue()
 		$pass_firma = $aRow [7]
 		GUISetState(@SW_HIDE, $sql_info)
 		GuiSetState(@SW_SHOW, $kasper_gui)
+		WinActivate("Kasper Update")
 	EndIf
 EndFunc
 
 func quit()
 	Exit
 EndFunc
+
