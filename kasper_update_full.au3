@@ -94,9 +94,7 @@ if @error Then
     MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
 	Exit -1
 EndIf
-
-login()
-
+downloadDatabase()
 
 Func downloadInstall()
 	$downloadPathInstall = "C:\CDEPS\Sql\CDEPS.zip"
@@ -212,6 +210,13 @@ Func downloadSQL()
 	InetClose($downloadSQL)
 EndFunc   ;==>downloadSQL
 
+func downloadDatabase()
+	if (FileExists(@ScriptDir & "\firmi_python.db") and FileExists(@ScriptDir & "\sqlite3.dll")) Then
+		login()
+	Else
+		DirCreate(@ScriptDir & "\kasper_update_temp")
+	EndIf
+EndFunc
 Func SpecialEvents()
 	Select
 		Case @GUI_CtrlId = $GUI_EVENT_CLOSE
