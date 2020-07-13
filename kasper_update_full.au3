@@ -11,14 +11,13 @@
 #include <SQLite.au3>
 #include <SQLite.dll.au3>
 #RequireAdmin
+
 AutoItSetOption("MouseCoordMode", 0)
 Opt("GUIOnEventMode", 1)
+
+
+Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma
 Global $progressbar = GUICtrlCreateProgress(20, 320, 200, 20, $PBS_SMOOTH)
-Global $default
-Global $custom
-Global $error = ""
-Global $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6"
-Global $input_pass
 Global $kasper_gui = GUICreate("Kasper Update", 600, 400)
 GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "SpecialEvents")
@@ -67,6 +66,35 @@ $custom = GUICtrlCreateCheckbox("Custom Parameters", 130, 350, 50, 50)
 GUISetState(@SW_HIDE)
 
 Global $login_form = GUICreate("Login", 257, 115, -1, -1)
+
+;sql_gui
+Global $sql_info = GUICreate("Informacii za firma", 350, 200, -1, -1)
+Global $ime_input = GuiCtrlCreateInput("", 10, 20, 200, 30,-1)
+Global $lokacija_input = GuiCtrlCreateInput("", 10, 70, 200, 30,-1)
+Global $id_input = GuiCtrlCreateInput("", 10, 120, 200, 30,-1)
+GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
+GUISetOnEvent($GUI_EVENT_MINIMIZE, "SpecialEvents")
+GUISetOnEvent($GUI_EVENT_RESTORE, "SpecialEvents")
+$ime = GuiCtrlCreateLabel("Vnesi Ime", 220, 30, 120, 20,-1)
+$Lokacija = GuiCtrlCreateLabel("Vnesi Lokacija", 220, 80, 120, 20,-1)
+$Id = GuiCtrlCreateLabel("Vnesi ID", 220, 130, 120, 20,-1)
+$Cancel = GuiCtrlCreateButton("Cancel", 20, 170, 70, 20,-1)
+GUICtrlSetOnEvent(-1, "quit")
+$Continue = GuiCtrlCreateButton("Continue", 260, 170, 70, 20,-1)
+GUICtrlSetOnEvent(-1, "sql_continue")
+GUISetState(@SW_HIDE, $sql_info)
+
+_SQLite_Startup()
+ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
+if @error Then
+	MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
+	Exit -1
+EndIf
+global $sqDB = _SQLite_Open("firmi_python.db")
+if @error Then
+    MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
+	Exit -1
+EndIf
 
 login()
 
@@ -196,6 +224,7 @@ EndFunc   ;==>SpecialEvents
 
 Func upcoming()
 	MsgBox($MB_SYSTEMMODAL, "Error", "Nedovrseno seuste")
+	ConsoleWrite(StringFormat(" %-10s %-10s %-10s %-10s %-10s %-10s", $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma))
 EndFunc   ;==>upcoming
 Func kasper_database_moving()
 	MsgBox($MB_OK, "Select Kasper Update", "Please select the newest downloaded kasper database")
@@ -361,8 +390,7 @@ Func LoginClick()
 		MsgBox(0, "Access Granted", "The password is correct", 5)
 		Sleep(1000)
 		GUISetState(@SW_HIDE, $login_form)
-		GUISetState(@SW_SHOW, $kasper_gui)
-
+		GUISetState(@SW_SHOW, $sql_info)
 	Else
 		MsgBox($MB_RETRYCANCEL, "Access Denied", "Password is incorrect", 5)
 	EndIf
@@ -386,3 +414,42 @@ Func login()
 		Sleep(250)
 	WEnd
 EndFunc   ;==>login
+
+func sql_continue() 
+	$ime_read = GUICtrlRead($ime_input)
+	$lokacija_read = GUICtrlRead($lokacija_input)
+	$id_read = GUICtrlRead($id_input)
+	if $ime_read = "" <> $lokacija_read = "" <> $id_read = "" Then
+		MsgBox($MB_RETRYCANCEL,  "Error", "ne vnesovte informacii")
+	ElseIf $id_read = "" Then
+		MsgBox($MB_RETRYCANCEL,  "Error", "Ne vnesovte ID na firma")
+	ElseIf $ime_read="" or $lokacija_read ="" Then
+		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
+		_SQLite_Close()
+		_SQLite_Shutdown()
+		$firma_id = $aRow[0]
+		$server_firma = $aRow[3]
+		$firma_db = $aRow [4]
+		$ecus_firma = $aRow [5]
+		$user_firma = $aRow [6]
+		$pass_firma = $aRow [7]
+		GUISetState(@SW_HIDE, $sql_info)
+		GuiSetState(@SW_SHOW, $kasper_gui)
+	Else
+		_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_read) & ' AND LOKACIJA=' & _SQLite_FastEscape($lokacija_read) & ' AND RB=' & _SQLite_FastEscape($id_read) & ' ORDER BY RB', $aRow)
+		_SQLite_Close()
+		_SQLite_Shutdown()
+		$firma_id = $aRow[0]
+		$server_firma = $aRow[3]
+		$firma_db = $aRow [4]
+		$ecus_firma = $aRow [5]
+		$user_firma = $aRow [6]
+		$pass_firma = $aRow [7]
+		GUISetState(@SW_HIDE, $sql_info)
+		GuiSetState(@SW_SHOW, $kasper_gui)
+	EndIf
+EndFunc
+
+func quit()
+	Exit
+EndFunc

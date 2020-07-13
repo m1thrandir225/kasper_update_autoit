@@ -4,12 +4,13 @@
 #include <GuiListView.au3>
 #include <SQLite.au3>
 #include <SQLite.dll.au3>
+#include <GUIConstantsEx.au3>
 
 local $hQuery, $aRow, $aData
-$ime = InputBox("Ime na Firma", "Vnesi ime na firma")
-$for_use_ime = String($ime)
-$lokacija = InputBox("Lokacija na Firma", "Vnesi lokacija na firma")
-$for_use_lokacija = String($lokacija)
+$ime_input = InputBox("Ime na Firma", "Vnesi ime na firma")
+$lokacija_input = InputBox("Lokacija na Firma", "Vnesi lokacija na firma")
+$id_input = InputBox("ID na Firma", "Vnesi ID na firma")
+
 _SQLite_Startup()
 ConsoleWrite("_SQLite_LibVersion=" & _SQLite_LibVersion() & @CRLF)
 if @error Then
@@ -21,9 +22,10 @@ if @error Then
     MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
     Exit -1
 EndIf
-_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($for_use_ime) & ' AND LOKACIJA=' & _SQLite_FastEscape($for_use_lokacija) & ' ORDER BY RB', $aRow)
+_SQLite_QuerySingleRow($sqDB, 'SELECT * FROM firmiD WHERE IME=' & _SQLite_FastEscape($ime_input) & ' AND LOKACIJA=' & _SQLite_FastEscape($lokacija_input) & ' AND RB=' & _SQLite_FastEscape($id_input) & ' ORDER BY RB', $aRow)
 _SQLite_Close()
 _SQLite_Shutdown()
+$firma_id = $aRow[0]
 $server = $aRow[3]
 $database = $aRow[4]
 $ecus = $aRow[5]
