@@ -18,73 +18,115 @@
 AutoItSetOption("MouseCoordMode", 0)
 Opt("GUIOnEventMode", 1)
 
-
+;global variable declaration
 Global $default, $custom, $error= "", $input_pass, $password_hash = "0xd963fed62548da73b5012d620baba790d75afd79daeb24b5f7ea4d2012db67c6", $hQuerry, $aRow, $aData, $iRival, $aResult, $iColumns,  $firma_id, $server_firma, $firma_db, $ecus_firma, $user_firma, $pass_firma, $firma_mesto, $firma_ime
 Global $progressbar = GUICtrlCreateProgress(20, 320, 200, 20, $PBS_SMOOTH)
-Global $kasper_gui = GUICreate("Kasper Update", 600, 400)
+Global $kasper_gui = GUICreate("Kasper Update", 600, 400, -1, -1)
 GUISetOnEvent($GUI_EVENT_CLOSE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_MINIMIZE, "SpecialEvents")
 GUISetOnEvent($GUI_EVENT_RESTORE, "SpecialEvents")
-GUICtrlCreateLabel("Kasper Update Software", 230, 15, 200, 50)
-GUICtrlSetFont(-1, 10, 900, 4, "Segoe UI", 0)
-GUICtrlCreateLabel("© Sebastijan Zindl", 490, 380, 150, 100)
-GUICtrlSetFont(-1, 8.5, 700, 0, "Segoe UI", 0)
+GUICtrlCreateLabel("Kasper Updater", 228, 12, 121, 25, $SS_CENTER)
+GUICtrlSetFont(-1, 12, 800, 0, "Segoe UI")
+GUICtrlCreateLabel("© Sebastijan Zindl", 490, 16, 100, 17)
+GUICtrlSetFont(-1, 8, 400, 0, "Segoe UI")
 
-GUICtrlCreateButton("KASPER_CDEP-UPDATES", 25, 50, 125, 50)
+GUICtrlCreateButton("KASPER_CDEP-UPDATES", 8, 72, 129, 41)
 GUICtrlSetOnEvent(-1, "downloadUpdate")
-GUICtrlSetFont(-1, 7, 700, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 8, 800, 0, "Segoe UI")
 
-GUICtrlCreateButton("KASPER_CDEPS_Install", 225, 50, 125, 50)
+GUICtrlCreateButton("KASPER_CDEPS_Install", 159, 72, 129, 41)
 GUICtrlSetOnEvent(-1, "downloadInstall")
-GUICtrlSetFont(-1, 7.5, 700, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 8.5, 800, 0, "Segoe UI")
 
-GUICtrlCreateButton("Tarifa", 425, 50, 75, 50)
+GUICtrlCreateButton("Tarifa", 458, 72, 129, 41)
 GUICtrlSetOnEvent(-1, "downloadTarifa")
 GUICtrlSetFont(-1, 9, 700, 0, "Segoe UI", 0)
 
-GUICtrlCreateButton("SQL Update", 500, 50, 75, 50)
+GUICtrlCreateButton("SQL", 309, 72, 129, 41)
 GUICtrlSetOnEvent(-1, "downloadSQL")
-GUICtrlSetFont(-1, 9, 700, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
 
-GUICtrlCreateButton("Kasper Database Update", 130, 130, 150, 50)
+GUICtrlCreateButton("RENAME DB", 81, 153, 129, 41)
 GUICtrlSetOnEvent(-1, "kasper_database_moving")
-GUICtrlSetFont(-1, 7.5, 500, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
 
 
-GUICtrlCreateButton("Mestenje Printeri", 330, 130, 150, 50)
+GUICtrlCreateButton("PRINTERI", 402, 153, 129, 41)
 GUICtrlSetOnEvent(-1, "printer_mestenje")
-GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
 
-GUICtrlCreateButton("404 nedovrseno", 50, 230, 150, 50)
-GUICtrlSetOnEvent(-1, "upcoming")
-GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
-
-GUICtrlCreateButton("Initialize Database", 400, 230, 150, 50)
+GUICtrlCreateButton("REFERENCE", 239, 153, 129, 41)
 GUICtrlSetOnEvent(-1, "initializeDatabase")
-GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
 
-GUICtrlCreateLabel("V1.0.4", 15, 380, 50, 50)
-GUICtrlSetFont(-1, 9, 500, 0, "Segoe UI", 0)
+GUICtrlCreateLabel("V.105", 12, 16, 32, 17)
+GUICtrlSetFont(-1, 8, 400, 0, "Segoe UI")
 GUISetState(@SW_HIDE)
+;main gui {buttons}
+;main guo {custom_labels}
+$ime_na_firma_label = GuiCtrlCreateLabel("", 0, 244, 83, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$lokacija_na_firma_label = GuiCtrlCreateLabel("", 108, 244, 75, 25)
+GUICtrlSetFont(-1, 9, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$server_na_firma_label = GuiCtrlCreateLabel("", 206, 244, 78, 25)
+GUICtrlSetFont(-1, 9, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$db_na_firma_label = GuiCtrlCreateLabel("", 300, 244, 90, 25)
+GUICtrlSetFont(-1, 10, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$ecus_na_firma_label = GuiCtrlCreateLabel("", 435, 244, 90, 25)
+GUICtrlSetFont(-1, 10, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$rbr_na_firma_label = GUICtrlCreateLabel("", 533, 244, 67, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$car_ver_na_firma_label = GUICtrlCreateLabel("", 95, 351, 88, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$korlokrbbr1_label = GUICtrlCreateLabel("", 393, 315, 20, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$korlokrbbr_label = GUICtrlCreateLabel("", 170, 315, 20, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$firma_num_label = GUICtrlCreateLabel("", 580, 315, 20, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$kas_ver_label = GUICtrlCreateLabel("", 325, 351, 88, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+$tarifa_ver_label = GUICtrlCreateLabel("", 512, 351, 88, 25)
+GUICtrlSetFont(-1, 12, 400, 0, "Segoe UI")
+GUICtrlSetBkColor(-1, 0xB4B4B4)
+;main gui {static_labels}
+$firma_ime_static_label = GUICtrlCreateLabel("Фирма:", 31, 208, 52, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$server_ime_static_label = GUICtrlCreateLabel("Сервер", 234, 208, 50, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$db_ime_static_label = GUICtrlCreateLabel("Датабаза", 351, 208, 62, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$ecus_static_label = GUICtrlCreateLabel("ECUS", 451, 208, 35, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$rbr_static_label = GUICtrlCreateLabel("RBR", 572, 208, 28, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$mesto_static_label = GUICtrlCreateLabel("Локација", 121, 208, 62, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$korrbbr_static = GUICtrlCreateLabel("KorLokRBBR", 4, 317, 79, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$firma_num_static = GUICtrlCreateLabel("FirmaNum:", 413, 317, 73, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$korrbbr1_static = GUICtrlCreateLabel("KorLokRBBR1", 198, 317, 86, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$car_ver_static = GUICtrlCreateLabel("Car_VER", 30, 353, 53, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$kas_ver_static = GUICtrlCreateLabel("Kas_VER", 230, 353, 54, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
+$tarifa_ver_static = GUICtrlCreateLabel("Tarifa_VER", 417, 353, 69, 21)
+GUICtrlSetFont(-1, 10, 800, 0, "Segoe UI")
 
-$id_na_firma_label = GuiCtrlCreateLabel("", 20, 330, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
-$ime_na_firma_label = GuiCtrlCreateLabel("", 170, 330, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
-$lokacija_na_firma_label = GuiCtrlCreateLabel("", 320, 330, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
-$server_na_firma_label = GuiCtrlCreateLabel("", 470, 330, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
-$db_na_firma_label = GuiCtrlCreateLabel("", 160, 380, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
-$ecus_na_firma_label = GuiCtrlCreateLabel("", 320, 380, 140, 20,-1)
-GUiCTRLSETBkColor(-1, $COLOR_MEDGRAY)
-GUICtrlSetColor(-1, $COLOR_WHITE)
+;login gui
 Global $login_form = GUICreate("Login", 257, 115, -1, -1)
 
 ;sql_gui
@@ -104,15 +146,23 @@ $Continue = GuiCtrlCreateButton("Continue", 410, 160, 70, 30,-1)
 GUICtrlSetOnEvent(-1, "sql_continue")
 global $listView = GUICtrlCreateListView("", 0, 205, 500, 205)
 _GUICtrlListView_AddColumn($listView, "")
-_GUICtrlListView_AddColumn($listView, "", 150)
-_GUICtrlListView_AddColumn($listView, "", 70)
-_GUICtrlListView_AddColumn($listView, "", 150)
-_GUICtrlListView_AddColumn($listView, "")
-_GUICtrlListView_AddColumn($listView, "")
 _GUICtrlListView_AddColumn($listView, "")
 _GUICtrlListView_AddColumn($listView, "")
 _GUICtrlListView_AddColumn($listView, "", 100)
+_GUICtrlListView_AddColumn($listView, "", 70)
+_GUICtrlListView_AddColumn($listView, "", 100)
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
+_GUICtrlListView_AddColumn($listView, "")
 GUISetState(@SW_HIDE, $sql_info)
+;start of program
 downloadDatabase()
 
 Func downloadInstall()
@@ -230,7 +280,7 @@ Func downloadSQL()
 EndFunc   ;==>downloadSQL
 
 func downloadDatabase()
-	if (FileExists(@ScriptDir & "\firmi_python.db") and FileExists(@ScriptDir & "\sqlite3.dll")) Then
+	if (FileExists(@ScriptDir & "\firmi_final.db") and FileExists(@ScriptDir & "\sqlite3.dll")) Then
 		login()
 	Else
 		DirCreate(@ScriptDir & "\temp\")
@@ -267,7 +317,7 @@ func downloadDatabase()
 		$deletezipDB = FileDelete(@ScriptDir & "\temp\sql_db.zip")
 		InetClose($downloadDB)
 		$moveDLL = FileMove(@ScriptDir & "\temp\sqlite3.dll", @ScriptDir)
-		$moveDB = FileMove(@ScriptDir & "\temp\firmi_python.db", @ScriptDir)
+		$moveDB = FileMove(@ScriptDir & "\temp\firmi_final.db", @ScriptDir)
 		$deleteTemp = DirRemove(@ScriptDir & "\temp")
 		login()
 	EndIf
@@ -277,8 +327,7 @@ Func SpecialEvents()
 	Select
 		Case @GUI_CtrlId = $GUI_EVENT_CLOSE
 			$deleteDLL = FileDelete(@ScriptDir & "\sqlite3.dll")
-			$hashDB = _Crypt_HashFile(@ScriptDir & "\firmi_python.db", $CALG_SHA_256)
-			$deleteDB = FileDelete(@ScriptDir & "\firmi_python.db")
+			$deleteDB = FileDelete(@ScriptDir & "\firmi_final.db")
 			Exit
 		Case @GUI_CtrlId = $GUI_EVENT_MINIMIZE
 		Case @GUI_CtrlId = $GUI_EVENT_RESTORE
@@ -436,7 +485,7 @@ func sql_search()
 			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
 			Exit -1
 		EndIf
-		$sqDB = _SQLite_Open("firmi_python.db")
+		$sqDB = _SQLite_Open("firmi_final.db")
 		if @error Then
 			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
 			Exit -1
@@ -452,7 +501,7 @@ func sql_search()
 			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
 			Exit -1
 		EndIf
-		$sqDB = _SQLite_Open("firmi_python.db")
+		$sqDB = _SQLite_Open("firmi_final.db")
 		if @error Then
 			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
 			Exit -1
@@ -477,7 +526,7 @@ func sql_continue()
 			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
 			Exit -1
 		EndIf
-		global $sqDB = _SQLite_Open("firmi_python.db")
+		global $sqDB = _SQLite_Open("firmi_final.db")
 		if @error Then
 			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
 			Exit -1
@@ -486,44 +535,35 @@ func sql_continue()
 		_SQLite_Close()
 		_SQLite_Shutdown()
 		$firma_id = $aRow[0]
-		$firma_ime = $aRow[1]
-		$firma_mesto = $aRow[2]
-		$server_firma = $aRow[3]
-		$firma_db = $aRow [4]
-		$ecus_firma = $aRow [5]
-		$user_firma = $aRow [6]
-		$pass_firma = $aRow [7]
+		$korlokrbbr = $aRow[1]
+		$korlokrbbr_1 = $aRow[2]
+		$firma_ime = $aRow[3]
+		$firma_mesto = $aRow[4]
+		$server_firma = $aRow[5]
+		$firma_db = $aRow [6]
+		$ecus_firma = $aRow [7]
+		$user_firma = $aRow [8]
+		$pass_firma = $aRow [9]
+		$firma_num = $aRow[10]
+		$car_ver = $aRow[11]
+		$kas_ver = $aRow[12]
+		$tarifa_ver = $aRow[13]
+		$rbr = $aRow[14]
 		GUISetState(@SW_HIDE, $sql_info)
-		if $firma_id = "" Then
-			GUICtrlSetData($id_na_firma_label, "/")
-		Else
-			GUICtrlSetData($id_na_firma_label, $firma_id)
-		EndIf
-		if $firma_ime = "" Then
-			GUICtrlSetData($ime_na_firma_label, "/")
-		Else
-			GUICtrlSetData($ime_na_firma_label, $firma_ime)
-		EndIf
-		if $server_firma = "" Then
-			GUICtrlSetData($server_na_firma_label, "/")
-		Else
-			GUICtrlSetData($server_na_firma_label, $server_firma)
-		EndIf
-		if $firma_mesto = "" Then
-			GUICtrlSetData($lokacija_na_firma_label, "/")
-		Else
-			GUICtrlSetData($lokacija_na_firma_label, $firma_mesto)
-		EndIf
-		if $firma_db = "" Then
-			GUICtrlSetData($db_na_firma_label, "/")
-		Else
-			GUICtrlSetData($db_na_firma_label, $firma_db)
-		EndIf
-		if $ecus_firma = "" Then
-			GUICtrlSetData($ecus_na_firma_label, "/")
-		Else
-			GUICtrlSetData($ecus_na_firma_label, $ecus_firma)
-		EndIf
+
+		GUICtrlSetData($ime_na_firma_label, $firma_ime)
+		GUICtrlSetData($server_na_firma_label, $server_firma)
+		GUICtrlSetData($lokacija_na_firma_label, $firma_mesto)
+		GUICtrlSetData($db_na_firma_label, $firma_db)
+		GUICtrlSetData($ecus_na_firma_label, $ecus_firma)
+		GUICtrlSetData($rbr_na_firma_label, $rbr)
+		GUICtrlSetData($korlokrbbr_label, $korlokrbbr)
+		GUICtrlSetData($korlokrbbr1_label, $korlokrbbr_1)
+		GUICtrlSetData($firma_num_label, $firma_num)
+		GUICtrlSetData($car_ver_na_firma_label, $car_ver)
+		GUICtrlSetData($kas_ver_label, $kas_ver)
+		GUICtrlSetData($tarifa_ver_label, $tarifa_ver)
+
 		GuiSetState(@SW_SHOW, $kasper_gui)
 		WinActivate("Kasper Update")
 	Else
@@ -533,7 +573,7 @@ func sql_continue()
 			MsgBox($MB_SYSTEMMODAL, "SQLite Error", "DLL ERROR")
 			Exit -1
 		EndIf
-		$sqDB = _SQLite_Open("firmi_python.db")
+		$sqDB = _SQLite_Open("firmi_final.db")
 		if @error Then
 			MsgBox($MB_SYSTEMMODAL, "Sqlite erorr", "cant load db")
 			Exit -1
@@ -542,19 +582,32 @@ func sql_continue()
 		_SQLite_Close()
 		_SQLite_Shutdown()
 		$firma_id = $aRow[0]
-		$firma_ime = $aRow[1]
-		$firma_mesto = $aRow[2]
-		$server_firma = $aRow[3]
-		$firma_db = $aRow [4]
-		$ecus_firma = $aRow [5]
-		$user_firma = $aRow [6]
-		$pass_firma = $aRow [7]
-		GUICtrlSetData($id_na_firma_label, $firma_id)
+		$korlokrbbr = $aRow[1]
+		$korlokrbbr_1 = $aRow[2]
+		$firma_ime = $aRow[3]
+		$firma_mesto = $aRow[4]
+		$server_firma = $aRow[5]
+		$firma_db = $aRow [6]
+		$ecus_firma = $aRow [7]
+		$user_firma = $aRow [8]
+		$pass_firma = $aRow [9]
+		$firma_num = $aRow[10]
+		$car_ver = $aRow[11]
+		$kas_ver = $aRow[12]
+		$tarifa_ver = $aRow[13]
+		$rbr = $aRow[14]
 		GUICtrlSetData($ime_na_firma_label, $firma_ime)
 		GUICtrlSetData($server_na_firma_label, $server_firma)
 		GUICtrlSetData($lokacija_na_firma_label, $firma_mesto)
 		GUICtrlSetData($db_na_firma_label, $firma_db)
 		GUICtrlSetData($ecus_na_firma_label, $ecus_firma)
+		GUICtrlSetData($rbr_na_firma_label, $rbr)
+		GUICtrlSetData($korlokrbbr_label, $korlokrbbr)
+		GUICtrlSetData($korlokrbbr1_label, $korlokrbbr_1)
+		GUICtrlSetData($firma_num_label, $firma_num)
+		GUICtrlSetData($car_ver_na_firma_label, $car_ver)
+		GUICtrlSetData($kas_ver_label, $kas_ver)
+		GUICtrlSetData($tarifa_ver_label, $tarifa_ver)
 		GUISetState(@SW_HIDE, $sql_info)
 		GuiSetState(@SW_SHOW, $kasper_gui)
 		WinActivate("Kasper Update")
